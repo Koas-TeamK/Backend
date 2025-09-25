@@ -27,9 +27,10 @@ public class Qr
 
     private String message;
 
-    @Column(nullable = false)
     private String createdDate;
 
-    @Column(nullable = false)
+    private String itemName;
+
+    @Column(nullable = false, unique = true)
     private String serial;
 }
