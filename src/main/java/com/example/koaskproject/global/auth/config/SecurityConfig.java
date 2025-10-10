@@ -6,6 +6,7 @@ import com.example.koaskproject.global.auth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,7 +38,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/login").permitAll()
                         .requestMatchers("api/qr/check").permitAll()
-                        .requestMatchers("api/admin/qr").hasAnyRole("ADMIN","VIEWER")
+                        .requestMatchers(HttpMethod.GET, "/api/admin/qr").hasAnyRole("ADMIN","VIEWER")
+                        .requestMatchers(HttpMethod.POST, "/api/admin/qr").hasRole("ADMIN")
+                        .requestMatchers("api/admin/qr/{id}").hasRole("ADMIN")
+                        .requestMatchers("api/admin/search").hasAnyRole("ADMIN","VIEWER")
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

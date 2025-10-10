@@ -5,19 +5,23 @@ import com.example.koaskproject.domain.qr.domain.Qr;
 
 public record QrResponseDto(
         Long id,
-        String image_url,
+        String qrUrl,
+        String imageUrl,
         String message,
         String createdDate,
-        String itemName
+        String itemName,
+        String serial
 )
 {
     public static QrResponseDto from(Qr qr) {
         return new QrResponseDto(
                 qr.getId(),
-                qr.getImage_url(),
+                qr.getQuUrl(),
+                qr.getImageUrl(),
                 qr.getMessage(),
                 qr.getCreatedDate(),
-                qr.getItemName()
+                qr.getItemName(),
+                qr.getSerial()
         );
     }
 }

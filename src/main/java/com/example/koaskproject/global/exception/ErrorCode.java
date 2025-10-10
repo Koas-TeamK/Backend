@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode
 {
     DATA_NOT_FOUND("DATA_NOT_FOUND", "데이터를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    R_TOKEN_DELETE_FAIL("R_TOKEN_DELETE_FAIL","DB에서 리프레쉬 토큰 삭제 실패",HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_PASSWORD("INVALID_PASSWORD", "비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
     DUPLICATE_SERIAL("DUPLICATE_SERIAL","똑같은 시리얼 정보가 존재합니다", HttpStatus.CONFLICT),
     INVALID_TOKEN("INVALID_TOKEN", "토큰이 유효하지 않습니다..", HttpStatus.BAD_REQUEST),

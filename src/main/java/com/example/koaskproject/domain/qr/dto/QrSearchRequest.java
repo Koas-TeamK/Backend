@@ -1,7 +1,8 @@
 package com.example.koaskproject.domain.qr.dto;
 
 public record QrSearchRequest(
-        String createdDate,
+        String startDate,
+        String endDate,
         String itemName,
         String serial
 ) {

@@ -22,8 +22,12 @@ public class Qr
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT", nullable = false)
+    private String imageUrl;
+
     @Column(nullable = false)
-    private String image_url;
+    private String quUrl;
 
     private String message;
 

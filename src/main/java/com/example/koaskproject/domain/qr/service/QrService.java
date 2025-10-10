@@ -12,9 +12,18 @@ import com.example.koaskproject.global.exception.GlobalException;
 import com.example.koaskproject.domain.item.entity.Item;
 import com.example.koaskproject.domain.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +35,7 @@ public class QrService
     public final ItemRepository itemRepository;
     public final AesUtil aesUtil;
     public final QrRepository qrRepository;
+    private static final int PAGE_SIZE = 100;
 
     public CheckQrResponseDto checkQr(String name ,String serial, String token)
     {
@@ -45,15 +55,18 @@ public class QrService
     }
 
 
-    public List<QrResponseDto> getAllQrs() {
-        return qrRepository.findAll()
-                .stream()
+    public List<QrResponseDto> getAllQrs(int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("serial").ascending());
+        Page<Qr> qrPage = qrRepository.findAll(pageable);
+
+        return qrPage.stream()
                 .map(QrResponseDto::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public QrResponseDto createQr(QrRequestDto qrCreateDto) {
+    public QrResponseDto createQr(QrRequestDto qrCreateDto){
+
         if(qrRepository.existsBySerialAndItemName(qrCreateDto.serial(), qrCreateDto.itemName()))
             throw new GlobalException(ErrorCode.DUPLICATE_SERIAL);
         Qr saved=qrRepository.save(QrRequestDto.of(qrCreateDto));
@@ -63,9 +76,10 @@ public class QrService
 
     @Transactional
     public QrResponseDto updateQr(Long id, QrRequestDto request) {
+        //이미지는 여기서 변환이 되어야 함
         int updatedCount = qrRepository.updateQrById(
                 id,
-                request.imageUrl(),
+                request.qrUrl(),
                 request.serial(),
                 request.message(),
                 request.createdDate(),
@@ -82,8 +96,10 @@ public class QrService
     }
 
     public List<QrResponseDto> searchQr(QrSearchRequest request) {
+
         List<Qr> qrList = qrRepository.searchQr(
-                request.createdDate(),
+                request.startDate(),
+                request.endDate(),
                 request.itemName(),
                 request.serial()
         );
