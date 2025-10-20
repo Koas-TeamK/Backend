@@ -19,11 +19,13 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 @SpringBootTest
+@ActiveProfiles("test")  // application-test.yml 사용
 public class AdminServiceTest {
     @Mock
     private AdminRepository adminRepository;

@@ -8,8 +8,6 @@ import java.util.List;
 
 
 public record CheckQrResponseDto(
-        List<String> imageUrl,
-        List<String> videoUrl,
         String serial,
         String itemName,
         String message,
@@ -18,8 +16,6 @@ public record CheckQrResponseDto(
 {
     public static CheckQrResponseDto from(Qr qr, Item item) {
         return new CheckQrResponseDto(
-                item.getItemType().getImageUrl(),
-                item.getItemType().getVideoUrl(),
                 item.getLimitedNumber(),
                 item.getItemType().getName(),
                 qr.getMessage(),

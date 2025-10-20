@@ -2,7 +2,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: ${T_DATASOURCE_URL}
+    url: jdbc:mysql://localhost:3306/testdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${T_DB_USERNAME}
     password: ${T_DB_PASSWORD}

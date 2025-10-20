@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -26,11 +24,4 @@ public class ItemType {
 
     private String description;
 
-    @Column(length = 500)
-    @ElementCollection
-    private final List<String> imageUrl= new ArrayList<>();
-
-    @Column(length = 500)
-    @ElementCollection
-    private final List<String> videoUrl= new ArrayList<>();
 }
