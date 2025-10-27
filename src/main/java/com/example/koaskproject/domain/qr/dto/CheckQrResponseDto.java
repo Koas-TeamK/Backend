@@ -14,10 +14,10 @@ public record CheckQrResponseDto(
         String createdDate
 )
 {
-    public static CheckQrResponseDto from(Qr qr, Item item) {
+    public static CheckQrResponseDto from(Qr qr) {
         return new CheckQrResponseDto(
-                item.getLimitedNumber(),
-                item.getItemType().getName(),
+                qr.getSerial(),
+                qr.getItemName(),
                 qr.getMessage(),
                 qr.getCreatedDate()
 

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface QrRepository extends JpaRepository<Qr, Long>
 {
-    Optional<Qr> findBySerial(String serial );
+    Optional<Qr> findBySerialAndItemName(String serial, String itemName);
     boolean existsBySerialAndItemName(String serial, String itemName);
 
 
@@ -47,4 +47,6 @@ public interface QrRepository extends JpaRepository<Qr, Long>
             @Param("itemName") String itemName,
             @Param("serial") String serial
     );
+
+    List<Qr> findBySerialBetween(String startSerial, String endSerial);
 }

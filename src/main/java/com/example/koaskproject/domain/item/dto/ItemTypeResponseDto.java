@@ -6,16 +6,12 @@ import java.util.List;
 
 public record ItemTypeResponseDto(
         String name,
-        String description,
-        List<String> imageUrl,
-        List<String> videoUrl
+        String description
 ) {
     public static ItemTypeResponseDto from(ItemType itemType) {
         return new ItemTypeResponseDto(
                 itemType.getName(),
-                itemType.getDescription(),
-                itemType.getImageUrl(),
-                itemType.getVideoUrl()
+                itemType.getDescription()
         );
     }
 }

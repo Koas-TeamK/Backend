@@ -1,10 +1,7 @@
 package com.example.koaskproject.domain.qr.service;
 
 import com.example.koaskproject.domain.qr.domain.Qr;
-import com.example.koaskproject.domain.qr.dto.CheckQrResponseDto;
-import com.example.koaskproject.domain.qr.dto.QrRequestDto;
-import com.example.koaskproject.domain.qr.dto.QrResponseDto;
-import com.example.koaskproject.domain.qr.dto.QrSearchRequest;
+import com.example.koaskproject.domain.qr.dto.*;
 import com.example.koaskproject.domain.qr.repository.QrRepository;
 import com.example.koaskproject.global.component.AesUtil;
 import com.example.koaskproject.global.exception.ErrorCode;
@@ -32,7 +29,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class QrService
 {
-    public final ItemRepository itemRepository;
     public final AesUtil aesUtil;
     public final QrRepository qrRepository;
     private static final int PAGE_SIZE = 100;
@@ -47,11 +43,9 @@ public class QrService
         } catch (Exception e){
             throw new GlobalException(ErrorCode.DEC_FAILED);
         }
-        Qr qr = qrRepository.findBySerial(serial).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
-        Item item = itemRepository.findByLimitedNumberAndItemType_Name(serial, name)
-                .orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
+        Qr qr = qrRepository.findBySerialAndItemName(serial,name).orElseThrow(() -> new GlobalException(ErrorCode.DATA_NOT_FOUND));
 
-        return CheckQrResponseDto.from(qr,item);
+        return CheckQrResponseDto.from(qr);
     }
 
 
@@ -103,6 +97,15 @@ public class QrService
                 request.itemName(),
                 request.serial()
         );
+
+        return qrList.stream()
+                .map(QrResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<QrResponseDto> searchQrBySerial(QrSearchBySerialRequest request)
+    {
+        List<Qr> qrList = qrRepository.findBySerialBetween(request.startSerial(), request.endSerial());
 
         return qrList.stream()
                 .map(QrResponseDto::from)

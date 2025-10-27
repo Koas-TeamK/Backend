@@ -5,6 +5,7 @@ import com.example.koaskproject.domain.qr.domain.Qr;
 import com.example.koaskproject.domain.qr.dto.CheckQrResponseDto;
 import com.example.koaskproject.domain.qr.dto.QrRequestDto;
 import com.example.koaskproject.domain.qr.dto.QrResponseDto;
+import com.example.koaskproject.domain.qr.dto.QrSearchBySerialRequest;
 import com.example.koaskproject.domain.qr.repository.QrRepository;
 import com.example.koaskproject.global.component.AesUtil;
 import com.example.koaskproject.global.exception.ErrorCode;
@@ -23,6 +24,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
@@ -37,6 +41,9 @@ class QrServiceTest {
 
     @Mock
     private QrRepository qrRepository;
+
+    @Autowired
+    private QrRepository qrRepositorys;
 
     @Autowired
     private AesUtil aesUtil;
@@ -57,26 +64,27 @@ class QrServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        qrService = new QrService(itemRepository, aesUtil,qrRepository);
+        qrService = new QrService(aesUtil,qrRepository);
     }
     @Test
-    void testCheckMaronQr_ValidToken() {
+    void testCheckMaronQr_ValidToken() throws Exception {
         String itemName = "ClassicChair";
         String serial = "0001";
         String token = "gCXixqZVXB4mqs_XgsADxQ";
 
         ItemType itemType = ItemType.builder().name(itemName).description("desc").build();
         Item mockItem = Item.builder().itemType(itemType).limitedNumber(serial).build();
-        Qr qr= Qr.builder().serial("0001").message("sdsd").createdDate("2025-09-08").build();
+        Qr qr= Qr.builder().serial("0001").message("sdsd").itemName("ClassicChair").createdDate("2025-09-08").build();
 
         System.out.println(qr.getCreatedDate());
         Mockito.when(itemRepository.findByLimitedNumberAndItemType_Name(serial, itemName))
                 .thenReturn(Optional.of(mockItem));
-        Mockito.when(qrRepository.findBySerial("0001"))
+        Mockito.when(qrRepository.findBySerialAndItemName("0001","ClassicChair"))
                 .thenReturn(Optional.of(qr));
 
         CheckQrResponseDto response = qrService.checkQr(itemName, serial, token);
 
+        System.out.println(aesUtil.decrypt(token));
         Assertions.assertEquals(serial, response.serial());
         Assertions.assertEquals(itemName, response.itemName());
     }
@@ -93,8 +101,8 @@ class QrServiceTest {
     void testCheckMaronQr_InvalidToken() throws Exception {
         // given
         String itemName = "ClassicChair";
-        String serial = "A001";
-        String invalidToken = "invalidToken";
+        String serial = "0001";
+        String invalidToken = "gCXixqZVXB4mqs_XgsADx";
 
         // when / then
         GlobalException ex = Assertions.assertThrows(GlobalException.class,
@@ -106,8 +114,8 @@ class QrServiceTest {
     void testCheckMaronQr_ItemNotFound() throws Exception {
         // given
         String itemName = "ClassicChair";
-        String serial = "1";
-        String token = "k8fivga3IATkbsfI9FN5pw==";
+        String serial = "0001";
+        String token = "gCXixqZVXB4mqs_XgsADxQ";
 
         Mockito.when(itemRepository.findByLimitedNumberAndItemType_Name(serial, itemName))
                 .thenReturn(Optional.empty());
@@ -122,7 +130,10 @@ class QrServiceTest {
     @Test
     @DisplayName("모든 QR 조회")
     void getAllQrsTest() {
-        Mockito.when(qrRepository.findAll()).thenReturn(List.of(qrSample));
+        Page<Qr> qrPage = new PageImpl<>(List.of(qrSample));
+
+        Mockito.when(qrRepository.findAll(Mockito.any(Pageable.class)))
+                .thenReturn(qrPage);
 
         List<QrResponseDto> result = qrService.getAllQrs(0);
 

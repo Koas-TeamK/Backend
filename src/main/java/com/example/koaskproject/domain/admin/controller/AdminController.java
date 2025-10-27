@@ -6,6 +6,7 @@ import com.example.koaskproject.domain.admin.entity.Admin;
 import com.example.koaskproject.domain.admin.service.AdminService;
 import com.example.koaskproject.domain.qr.dto.QrRequestDto;
 import com.example.koaskproject.domain.qr.dto.QrResponseDto;
+import com.example.koaskproject.domain.qr.dto.QrSearchBySerialRequest;
 import com.example.koaskproject.domain.qr.dto.QrSearchRequest;
 import com.example.koaskproject.domain.qr.service.QrService;
 import com.example.koaskproject.global.aop.RefreshTokenCheck;
@@ -51,6 +52,14 @@ public class AdminController
         System.out.println("🔍 QrSearchRequest: " + request);
 
         List<QrResponseDto> results = qrService.searchQr(request);
+        return ResponseEntity.ok(results);
+    }
+
+    @PostMapping("/search/serial")
+    @RefreshTokenCheck
+    public ResponseEntity<List<QrResponseDto>> searchBySerialRequest(@RequestBody QrSearchBySerialRequest request) {
+
+        List<QrResponseDto> results = qrService.searchQrBySerial(request);
         return ResponseEntity.ok(results);
     }
 
