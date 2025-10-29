@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/admin/qr").hasAnyRole("ADMIN","VIEWER")
                         .requestMatchers(HttpMethod.POST, "/api/admin/qr").hasRole("ADMIN")
                         .requestMatchers("api/admin/qr/{id}").hasRole("ADMIN")
+                        .requestMatchers("api/news/crawlering").hasRole("ADMIN")
                         .requestMatchers("api/admin/search").hasAnyRole("ADMIN","VIEWER")
                         .anyRequest().authenticated()
                 )
