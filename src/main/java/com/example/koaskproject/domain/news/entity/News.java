@@ -32,6 +32,8 @@ public class News
 
     private String date;
 
+    private String link;
+
     @ElementCollection
     @CollectionTable(
             name = "news_images",

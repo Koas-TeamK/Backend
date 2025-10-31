@@ -41,4 +41,9 @@ public class NewsController {
         return ResponseEntity.ok(null);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<News>> getAllNews(){
+        return ResponseEntity.ok(koasCrawlerService.getAllNews()) ;
+    }
+
 }

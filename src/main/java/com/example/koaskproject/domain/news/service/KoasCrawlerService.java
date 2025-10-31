@@ -33,7 +33,6 @@ public class KoasCrawlerService {
     @Transactional(readOnly = true)
     public List<NewsSummary> getNewsSummary() {
         List<News> newsList = newsRepository.findTop5ByOrderByNumberDesc();
-
         List<NewsSummary> newsSummaryList=new ArrayList<>();
         newsList.forEach(n->{
             newsSummaryList.add(NewsSummary.builder().id(n.getId()).title(n.getTitle())
@@ -91,7 +90,8 @@ public class KoasCrawlerService {
 
                 img= fetchDetailImages(link);
                 String content = fetchDetailText(link);
-                allNews.add(News.builder().number(num).date(date).title(title).content(content).imgUrl(img).build());
+                allNews.add(News.builder().number(num).date(date).title(title).content(content).imgUrl(img)
+                        .link(link).build());
 
             }
         }
@@ -166,4 +166,8 @@ public class KoasCrawlerService {
         return images;
     }
 
+    public List<News> getAllNews()
+    {
+        return newsRepository.findAll();
+    }
 }
